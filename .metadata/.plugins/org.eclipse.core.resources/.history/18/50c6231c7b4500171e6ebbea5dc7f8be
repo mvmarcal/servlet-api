@@ -1,0 +1,31 @@
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import br.com.alura.gerenciador.web.Tarefa;
+
+
+public class FazTudo extends HttpServlet{
+	@Override
+	public void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		try {
+			String tarefa = req.getParameter("tarefa");
+			if(tarefa==null)
+				throw new IllegalArgumentException();
+			String nomeDaClasse = "br.com.alura.gerenciador.web."+tarefa;
+			Class type = Class.forName(nomeDaClasse);
+			Tarefa instancia = (Tarefa) type.newInstance();
+			String pagina = instancia.executa(req, resp);
+			req.getRequestDispatcher(pagina);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+		
+	}
+	
+}
